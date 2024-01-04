@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Alpine Plugins -->
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/@alpinejs/intersect@3.x.x/dist/cdn.min.js"
+    ></script>
+
+    <!-- Alpine Core -->
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
+    ></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+      };
+    </script>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="overflow-x-hidden bg-gray-50 dark:bg-slate-800">
+    <!-- navbar ini coeg -->
+    <header
+      class="absolute inset-x-0 top-0 z-50"
+      x-data="{ shown: false }"
+      x-intersect.enter="shown = true"
+    >
+      <nav
+        x-show="shown"
+        x-transition:enter="transition transform ease-out duration-300 delay-300"
+        x-transition:enter-start="-translate-y-20 opacity-0"
+        x-transition:enter-end="translate-y-0 opacity-100"
+        x-data="{ open: false, scrolled: false, fadeOut: false }"
+        x-init="
+        window.addEventListener('scroll', () => {
+          scrolled = window.scrollY > 0;
+          fadeOut = false;
+        });
+      "
+        :class="{ 'bg-transparent border-b-0 border-transparent': !open && !scrolled && !fadeOut, 'backdrop-blur-sm dark:bg-slate-800/50 bg-zinc-50/50 border-b border-gray-200 dark:border-white/10 ': open || scrolled || fadeOut }"
+        class="fixed top-0 left-0 right-0 transition-all duration-300"
+      >
+        <div class="mx-auto max-w-7xl px-6 lg:px-8 transition-all">
+          <div class="mx-auto max-w-2xl lg:max-w-6xl">
+            <div class="relative flex h-16 items-center justify-start">
+              <!-- logo -->
+              <div
+                class="absolute inset-y-0 left-0 flex items-center transition-all"
+              >
+                <span class="sr-only">My Logo</span>
+                <a
+                  href="#"
+                  class="inline-flex items-center justify-start rounded-md py-2"
+                >
+                  <svg
+                    class="block h-5 w-auto fill-gray-900 dark:fill-slate-200"
+                    viewBox="0 0 344 178"
+                  >
+                    <path
+                      d="M205 1L0 1L24 42.5L132.5 42.5L80.5 135.5L104.5 178L205 1Z"
+                    />
+                    <path
+                      d="M139 177L344 177L320 135.5L211.5 135.5L263.5 42.5L239.5 9.13568e-06L139 177Z"
+                    />
+                  </svg>
+                </a>
+              </div>
+              <!-- nav mode dekstop -->
+              <div
+                class="flex flex-1 justify-center items-center sm:items-stretch transition-all"
+              >
+                <div class="hidden md:block">
+                  <div class="flex space-x-8 lg:space-x-16" id="desktop-nav">
+                    <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
+                    <a
+                      href="#Dashboard"
+                      class="text-gray-900 dark:text-slate-200 hover:text-sky-400 py-2 text-sm font-medium transition-all"
+                      >Dashboard</a
+                    >
+                    <a
+                      href="#Services"
+                      class="text-gray-900 dark:text-slate-200 hover:text-sky-400 py-2 text-sm font-medium transition-all"
+                      >Services</a
+                    >
+                    <a
+                      href="#Portofolio"
+                      class="text-gray-900 dark:text-slate-200 hover:text-sky-400 py-2 text-sm font-medium transition-all"
+                      >Portofolio</a
+                    >
+                    <a
+                      href="#Contact"
+                      class="text-gray-900 dark:text-slate-200 hover:text-sky-400 py-2 text-sm font-medium transition-all"
+                      >Contact</a
+                    >
+                  </div>
+                </div>
+              </div>
+              <!-- nav mode mobile -->
+              <div
+                class="absolute inset-y-0 right-0 flex items-center md:hidden"
+                x-data="{ isOpen: false }"
+              >
+                <!-- Mobile menu button-->
+                <button
+                  type="button"
+                  class="inline-flex items-center justify-start rounded-md py-2 text-gray-400"
+                  aria-controls="mobile-menu"
+                  :aria-expanded="isOpen ? 'true' : 'false'"
+                  @click="isOpen = !isOpen"
+                  x-on:click="open = ! open"
+                >
+                  <span class="sr-only">Open main menu</span>
+                  <svg
+                    class="block h-6 w-6 transition-all"
+                    :class="{ 'hidden': isOpen, 'block': !isOpen }"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    aria-hidden="true"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+                    />
+                  </svg>
+                  <svg
+                    class="hidden h-6 w-6 transition-all"
+                    :class="{ 'hidden': !isOpen, 'block': isOpen }"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    aria-hidden="true"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              </div>
+              <!-- Dropdown -->
+              <div
+                class="absolute inset-y-0 right-0 hidden md:inline-flex flex items-center transition-all"
+              >
+                <div class="" x-data="{ isopen: false }">
+                  <button
+                    x-data="{ open: false }"
+                    x-on:click="open = !open"
+                    @click="isopen = ! isopen"
+                    class="flex items-center"
+                  >
+                    <div
+                      class="w-6 h-6 flex items-center justify-center hover:text-sky-400"
+                    >
+                      <div
+                        x-bind:class="open ? ' scale-0' : '-translate-y-1.5'"
+                        class="transform transition-all w-full h-[1.04px] bg-gray-900 dark:bg-slate-200 absolute"
+                      ></div>
+
+                      <div
+                        x-bind:class="open ? 'origin-center h-[2px] rotate-45' : 'opacity-100'"
+                        class="transform transition-all w-full h-[1.04px] bg-gray-900 dark:bg-slate-200 absolute"
+                      ></div>
+                      <div
+                        x-bind:class="open ? 'origin-center h-[2px] -rotate-45' : 'opacity-100'"
+                        class="transform transition-all w-full h-[1.04px] bg-gray-900 dark:bg-slate-200 absolute"
+                      ></div>
+
+                      <div
+                        x-bind:class="open ? ' scale-0' : 'translate-y-1.5'"
+                        class="transform transition-all w-full h-[1.04px] bg-gray-900 dark:bg-slate-200 absolute"
+                      ></div>
+                    </div>
+                  </button>
+                  <div
+                    x-show="isopen"
+                    class="hidden md:inline absolute right-0 z-10 mt-6 w-64 origin-top-right rounded-lg bg-zinc-50 dark:bg-slate-800 shadow-[0_15px_40px_-15px_rgba(0,0,0,0.05)] border border-gray-200 dark:border-white/10 focus:outline-none"
+                    role="menu"
+                    aria-orientation="vertical"
+                    aria-labelledby="menu-button"
+                    tabindex="-1"
+                  >
+                    <div class="flex flex-col gap-2 p-2" role="none">
+                      <div
+                        class="text-gray-900 dark:text-slate-200 fill-gray-900 dark:fill-slate-200 font-medium block"
+                        role="menuitem"
+                        tabindex="-1"
+                        id="menu-item-2"
+                      >
+                        <div
+                          class="relative flex gap-2 hover:bg-zinc-100 hover:dark:bg-slate-900 p-2 rounded-lg"
+                        >
+                          <div class="flex my-auto">
+                            <svg
+                              class="w-[1.2rem] h-[1.2rem] -scale-x-100"
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 32 32"
+                              x="0px"
+                              y="0px"
+                            >
+                              <path
+                                xmlns="http://www.w3.org/2000/svg"
+                                d="M16.16,31h-.05c-8.04,0-14.68-6.26-15.11-14.25-.02-.46,.27-.88,.72-1.01,.45-.13,.92,.06,1.15,.47,1.32,2.35,3.91,4.04,6.94,4.53,3.02,.48,6.02-.3,8.02-2.12,2.4-1.95,3.71-5.04,3.55-8.29-.15-3.15-1.63-5.88-4.05-7.49-.39-.26-.55-.74-.39-1.18,.16-.43,.61-.7,1.06-.65,9.5,1.14,13.38,9.02,12.96,15.85-.42,6.82-5.23,14.15-14.81,14.15ZM3.68,20.16c1.77,5.16,6.69,8.84,12.43,8.84h.04c8.29,0,12.45-6.36,12.82-12.27,.31-5.01-2.05-10.67-7.76-12.89,1.29,1.79,2.05,3.99,2.17,6.38,.19,3.89-1.4,7.59-4.24,9.9-2.44,2.22-5.96,3.17-9.64,2.58-2.2-.35-4.21-1.25-5.81-2.54Z"
+                              />
+                            </svg>
+                          </div>
+                          <div class="flex my-auto">Dark Mode</div>
+                          <div class="absolute right-2 my-auto">
+                            <label
+                              class="relative inline-flex items-center cursor-pointer"
+                            >
+                              <input
+                                type="checkbox"
+                                id="theme"
+                                value=""
+                                class="sr-only peer"
+                              />
+                              <div
+                                class="w-11 h-6 bg-gray-200 rounded-full dark:bg-gray-900 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-sky-400 after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-sky-400"
+                              ></div>
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        href="MyCV.pdf"
+                        class="text-gray-900 dark:text-slate-200 fill-gray-900 dark:fill-slate-200 font-medium block"
+                        role="menuitem"
+                        tabindex="-1"
+                        id="menu-item-2"
+                      >
+                        <div
+                          class="flex gap-2 hover:bg-zinc-100 hover:dark:bg-slate-900 p-2 rounded-lg"
+                        >
+                          <div class="flex my-auto">
+                            <svg
+                              class="w-[1.2rem] h-[1.2rem]"
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="100"
+                              height="100"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                transform="scale(1.1,1.1) translate(-0.1,-0.1)"
+                                d="M13 3v9.586l3.5-3.5l1.414 1.414L12 16.414L6.086 10.5L7.5 9.086l3.5 3.5V3h2ZM4.5 14v5h15v-5h2v7h-19v-7h2Z"
+                              />
+                            </svg>
+                          </div>
+                          <div class="flex my-auto">Download CV</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- nav mobile baru -->
+        <div
+          class="relative z-10"
+          aria-labelledby="slide-over-title"
+          role="dialog"
+          aria-modal="true"
+        >
+          <div
+            class="fixed inset-0 overflow-hidden mr-16 h-screen"
+            x-show="open"
+            x-transition:enter="transform transition ease-in-out duration-500 sm:duration-700"
+            x-transition:enter-start="-translate-x-full"
+            x-transition:enter-end="translate-x-0"
+            x-transition:leave="transform transition ease-in-out duration-500 sm:duration-700"
+            x-transition:leave-start="translate-x-0"
+            x-transition:leave-end="-translate-x-full"
+          >
+            <div class="absolute inset-0 overflow-hidden h-screen">
+              <div class="pointer-events-auto relative h-screen">
+                <div
+                  class="flex h-screen flex-col overflow-y-scroll bg-zinc-50 dark:bg-slate-800 border dark:border-white/10 border-gray-200 shadow-[0_15px_40px_-15px_rgba(0,0,0,0.05)"
+                >
+                  <div class="px-6 py-4">
+                    <div class="flex items-center transition-all">
+                      <span class="sr-only">My Logo</span>
+                      <a
+                        href="#"
+                        class="inline-flex items-center justify-start rounded-md py-2"
+                      >
+                        <svg
+                          class="block h-5 w-auto fill-gray-900 dark:fill-slate-200"
+                          viewBox="0 0 344 178"
+                        >
+                          <path
+                            d="M205 1L0 1L24 42.5L132.5 42.5L80.5 135.5L104.5 178L205 1Z"
+                          ></path>
+                          <path
+                            d="M139 177L344 177L320 135.5L211.5 135.5L263.5 42.5L239.5 9.13568e-06L139 177Z"
+                          ></path>
+                        </svg>
+                      </a>
+                    </div>
+                  </div>
+
+                  <hr
+                    class="h-px border-t-0 bg-gray-200 dark:bg-white/10 opacity-100"
+                  />
+
+                  <div class="relative my-6 flex-1 px-4 sm:px-6">
+                    <div
+                      class="flex flex-col gap-2 p-2"
+                      role="none"
+                      id="mobile-nav"
+                    >
+                      <a
+                        class="text-gray-900 dark:text-slate-200 fill-gray-900 dark:fill-slate-200 block"
+                        role="menuitem"
+                        tabindex="-1"
+                        href="#Dashboard"
+                      >
+                        <div
+                          class="relative flex gap-2 hover:bg-zinc-100 hover:dark:bg-slate-900 p-2 rounded-lg"
+                        >
+                          <div class="flex my-auto">
+                            <svg
+                              class="w-[1.2rem] h-[1.2rem] -scale-x-100"
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 32 32"
+                              x="0px"
+                              y="0px"
+                            >
+                              <path
+                                xmlns="http://www.w3.org/2000/svg"
+                                d="M16.16,31h-.05c-8.04,0-14.68-6.26-15.11-14.25-.02-.46,.27-.88,.72-1.01,.45-.13,.92,.06,1.15,.47,1.32,2.35,3.91,4.04,6.94,4.53,3.02,.48,6.02-.3,8.02-2.12,2.4-1.95,3.71-5.04,3.55-8.29-.15-3.15-1.63-5.88-4.05-7.49-.39-.26-.55-.74-.39-1.18,.16-.43,.61-.7,1.06-.65,9.5,1.14,13.38,9.02,12.96,15.85-.42,6.82-5.23,14.15-14.81,14.15ZM3.68,20.16c1.77,5.16,6.69,8.84,12.43,8.84h.04c8.29,0,12.45-6.36,12.82-12.27,.31-5.01-2.05-10.67-7.76-12.89,1.29,1.79,2.05,3.99,2.17,6.38,.19,3.89-1.4,7.59-4.24,9.9-2.44,2.22-5.96,3.17-9.64,2.58-2.2-.35-4.21-1.25-5.81-2.54Z"
+                              />
+                            </svg>
+                          </div>
+                          <div class="flex my-auto font-medium">Dashboard</div>
+                        </div>
+                      </a>
+                      <a
+                        class="text-gray-900 dark:text-slate-200 fill-gray-900 dark:fill-slate-200 block"
+                        role="menuitem"
+                        tabindex="-1"
+                        href="#Services"
+                      >
+                        <div
+                          class="relative flex gap-2 hover:bg-zinc-100 hover:dark:bg-slate-900 p-2 rounded-lg"
+                        >
+                          <div class="flex my-auto">
+                            <svg
+                              class="w-[1.2rem] h-[1.2rem] -scale-x-100"
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 32 32"
+                              x="0px"
+                              y="0px"
+                            >
+                              <path
+                                xmlns="http://www.w3.org/2000/svg"
+                                d="M16.16,31h-.05c-8.04,0-14.68-6.26-15.11-14.25-.02-.46,.27-.88,.72-1.01,.45-.13,.92,.06,1.15,.47,1.32,2.35,3.91,4.04,6.94,4.53,3.02,.48,6.02-.3,8.02-2.12,2.4-1.95,3.71-5.04,3.55-8.29-.15-3.15-1.63-5.88-4.05-7.49-.39-.26-.55-.74-.39-1.18,.16-.43,.61-.7,1.06-.65,9.5,1.14,13.38,9.02,12.96,15.85-.42,6.82-5.23,14.15-14.81,14.15ZM3.68,20.16c1.77,5.16,6.69,8.84,12.43,8.84h.04c8.29,0,12.45-6.36,12.82-12.27,.31-5.01-2.05-10.67-7.76-12.89,1.29,1.79,2.05,3.99,2.17,6.38,.19,3.89-1.4,7.59-4.24,9.9-2.44,2.22-5.96,3.17-9.64,2.58-2.2-.35-4.21-1.25-5.81-2.54Z"
+                              />
+                            </svg>
+                          </div>
+                          <div class="flex my-auto font-medium">Services</div>
+                        </div>
+                      </a>
+                      <a
+                        class="text-gray-900 dark:text-slate-200 fill-gray-900 dark:fill-slate-200 block"
+                        role="menuitem"
+                        tabindex="-1"
+                        href="#Portofolio"
+                      >
+                        <div
+                          class="relative flex gap-2 hover:bg-zinc-100 hover:dark:bg-slate-900 p-2 rounded-lg"
+                        >
+                          <div class="flex my-auto">
+                            <svg
+                              class="w-[1.2rem] h-[1.2rem] -scale-x-100"
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 32 32"
+                              x="0px"
+                              y="0px"
+                            >
+                              <path
+                                xmlns="http://www.w3.org/2000/svg"
+                                d="M16.16,31h-.05c-8.04,0-14.68-6.26-15.11-14.25-.02-.46,.27-.88,.72-1.01,.45-.13,.92,.06,1.15,.47,1.32,2.35,3.91,4.04,6.94,4.53,3.02,.48,6.02-.3,8.02-2.12,2.4-1.95,3.71-5.04,3.55-8.29-.15-3.15-1.63-5.88-4.05-7.49-.39-.26-.55-.74-.39-1.18,.16-.43,.61-.7,1.06-.65,9.5,1.14,13.38,9.02,12.96,15.85-.42,6.82-5.23,14.15-14.81,14.15ZM3.68,20.16c1.77,5.16,6.69,8.84,12.43,8.84h.04c8.29,0,12.45-6.36,12.82-12.27,.31-5.01-2.05-10.67-7.76-12.89,1.29,1.79,2.05,3.99,2.17,6.38,.19,3.89-1.4,7.59-4.24,9.9-2.44,2.22-5.96,3.17-9.64,2.58-2.2-.35-4.21-1.25-5.81-2.54Z"
+                              />
+                            </svg>
+                          </div>
+                          <div class="flex my-auto font-medium">Portofolio</div>
+                        </div>
+                      </a>
+                      <a
+                        class="text-gray-900 dark:text-slate-200 fill-gray-900 dark:fill-slate-200 block"
+                        role="menuitem"
+                        tabindex="-1"
+                        href="#Contact"
+                      >
+                        <div
+                          class="relative flex gap-2 hover:bg-zinc-100 hover:dark:bg-slate-900 p-2 rounded-lg"
+                        >
+                          <div class="flex my-auto">
+                            <svg
+                              class="w-[1.2rem] h-[1.2rem] -scale-x-100"
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 32 32"
+                              x="0px"
+                              y="0px"
+                            >
+                              <path
+                                xmlns="http://www.w3.org/2000/svg"
+                                d="M16.16,31h-.05c-8.04,0-14.68-6.26-15.11-14.25-.02-.46,.27-.88,.72-1.01,.45-.13,.92,.06,1.15,.47,1.32,2.35,3.91,4.04,6.94,4.53,3.02,.48,6.02-.3,8.02-2.12,2.4-1.95,3.71-5.04,3.55-8.29-.15-3.15-1.63-5.88-4.05-7.49-.39-.26-.55-.74-.39-1.18,.16-.43,.61-.7,1.06-.65,9.5,1.14,13.38,9.02,12.96,15.85-.42,6.82-5.23,14.15-14.81,14.15ZM3.68,20.16c1.77,5.16,6.69,8.84,12.43,8.84h.04c8.29,0,12.45-6.36,12.82-12.27,.31-5.01-2.05-10.67-7.76-12.89,1.29,1.79,2.05,3.99,2.17,6.38,.19,3.89-1.4,7.59-4.24,9.9-2.44,2.22-5.96,3.17-9.64,2.58-2.2-.35-4.21-1.25-5.81-2.54Z"
+                              />
+                            </svg>
+                          </div>
+                          <div class="flex my-auto font-medium">Contact</div>
+                        </div>
+                      </a>
+                      <a
+                        class="text-gray-900 dark:text-slate-200 block"
+                        role="menuitem"
+                        tabindex="-1"
+                        id="menu-item-2"
+                      >
+                        <div
+                          class="relative flex gap-2 hover:bg-zinc-100 hover:dark:bg-slate-900 p-2 rounded-lg"
+                        >
+                          <div class="flex my-auto">
+                            <svg
+                              class="w-[1.2rem] h-[1.2rem] -scale-x-100 fill-gray-900 dark:fill-sky-400"
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 32 32"
+                              x="0px"
+                              y="0px"
+                            >
+                              <path
+                                xmlns="http://www.w3.org/2000/svg"
+                                d="M16.16,31h-.05c-8.04,0-14.68-6.26-15.11-14.25-.02-.46,.27-.88,.72-1.01,.45-.13,.92,.06,1.15,.47,1.32,2.35,3.91,4.04,6.94,4.53,3.02,.48,6.02-.3,8.02-2.12,2.4-1.95,3.71-5.04,3.55-8.29-.15-3.15-1.63-5.88-4.05-7.49-.39-.26-.55-.74-.39-1.18,.16-.43,.61-.7,1.06-.65,9.5,1.14,13.38,9.02,12.96,15.85-.42,6.82-5.23,14.15-14.81,14.15ZM3.68,20.16c1.77,5.16,6.69,8.84,12.43,8.84h.04c8.29,0,12.45-6.36,12.82-12.27,.31-5.01-2.05-10.67-7.76-12.89,1.29,1.79,2.05,3.99,2.17,6.38,.19,3.89-1.4,7.59-4.24,9.9-2.44,2.22-5.96,3.17-9.64,2.58-2.2-.35-4.21-1.25-5.81-2.54Z"
+                              />
+                            </svg>
+                          </div>
+                          <div class="flex my-auto font-medium">Dark Mode</div>
+                          <div class="absolute right-2 my-auto">
+                            <label
+                              class="relative inline-flex items-center cursor-pointer"
+                            >
+                              <input
+                                type="checkbox"
+                                id="theme.mobile"
+                                value=""
+                                class="sr-only peer"
+                              />
+                              <div
+                                class="w-11 h-6 bg-gray-200 rounded-full dark:bg-gray-900 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-sky-400 after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-sky-400"
+                              ></div>
+                            </label>
+                          </div>
+                        </div>
+                      </a>
+                      <a
+                        href="MyCV.pdf"
+                        class="text-gray-900 dark:text-slate-200 block"
+                        role="menuitem"
+                        tabindex="-1"
+                        id="menu-item-2"
+                      >
+                        <div
+                          class="flex gap-2 hover:bg-zinc-100 hover:dark:bg-slate-900 p-2 rounded-lg"
+                        >
+                          <div class="flex my-auto">
+                            <svg
+                              class="w-[1.2rem] h-[1.2rem] fill-gray-900 dark:fill-sky-400"
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="100"
+                              height="100"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                transform="scale(1.1,1.1) translate(-1.5,-0.5)"
+                                d="M13 3v9.586l3.5-3.5l1.414 1.414L12 16.414L6.086 10.5L7.5 9.086l3.5 3.5V3h2ZM4.5 14v5h15v-5h2v7h-19v-7h2Z"
+                              />
+                            </svg>
+                          </div>
+                          <div class="flex my-auto font-medium">
+                            Download CV
+                          </div>
+                        </div>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Mobile menu, show/hide based on menu state. -->
+        <!-- <div
+          class="md:hidden transition-all"
+          id="mobile-menu"
+          x-show="open"
+          x-transition:enter="transition-all ease-out duration-300 "
+          x-transition:enter-start="transition-all opacity-0 transform -translate-y-full"
+          x-transition:enter-end="transition-all opacity-100 transform translate-y-0"
+          x-transition:leave="transition-all ease-in duration-300"
+          x-transition:leave-start="transition-all opacity-100 transform translate-y-0"
+          x-transition:leave-end="transition-all opacity-0 transform -translate-y-full"
+          style="display: none"
+        >
+          <div class="space-y-1 pb-3 pt-2" id="mobile-nav">
+            <a
+              href="#Dashboard"
+              class="text-blue-500 bg-gray-100/60 text-black block px-6 py-2 text-base font-medium"
+              >Dashboard</a
+            >
+            <a
+              href="#Services"
+              class="text-black block px-6 py-2 text-base font-medium"
+              >Services</a
+            >
+            <a
+              href="#Portofolio"
+              class="text-black block px-6 py-2 text-base font-medium"
+              >Portofolio</a
+            >
+            <a
+              href="#Contact"
+              class="text-black block px-6 py-2 text-base font-medium"
+              >Contact</a
+            >
+            <div class="grid grid-cols-1 divide-y px-6">
+              <div class="py-1"></div>
+              <div class="py-1"></div>
+            </div>
+            <a
+              href="MyCV.pdf"
+              class="text-black block px-6 py-2 text-base font-medium"
+              download
+            >
+              Download CV
+            </a>
+          </div>
+        </div> -->
+      </nav>
+    </header>
+    <!-- End -->
+    <div
+      id="particles-js"
+      class="absolute top-0 left-0 w-full h-[250rem] sm:h-[180rem] overflow-visible bg-cover bg-center bg-no-repeat"
+    ></div>
+    <section id="Dashboard" class="sm:h-screen"></section>
+
+    <section
+      id="Services"
+      class=""
+      x-data="{ scrolled : false}"
+      x-init="
+    window.addEventListener('scroll', () => {
+      scrolled = window.scrollY >= 100;
+    } , { once: false });
+    console.log(scrolled);
+    window.addEventListener('scroll', () => {
+      // Dapatkan nilai window.scrollY
+      const scrollY = window.scrollY;
+    
+      // Tampilkan nilai scrollY di konsol
+      //console.log(scrollY);
+    });
+    "
+    ></section>
+
+    <section id="Portofolio"></section>
+    <!-- <section id="About" class="h-screen">
+      <div
+        class="h-screen flex items-center bg-zinc-50 bg-center bg-cover"
+        style="background-image: url('Wave.svg')"
+      >
+        <div class="mx-auto max-w-7xl px-6 lg:px-8">
+          <div class="mx-auto max-w-2xl lg:text-center">
+            <h2 class="text-lg font-medium leading-8 text-blue-500">
+              About Me
+            </h2>
+            <p
+              class="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl"
+            >
+              Everything you need to deploy your app
+            </p>
+            <p class="mt-6 font-medium text-base leading-6 text-gray-500">
+              Saya seorang yang memiliki pengalaman luas dalam memberikan
+              dukungan teknis. Pengetahuan luas tentang sistem operasi, jaringan
+              komputer, perangkat keras dan perangkat lunak. Terampil
+              mengoperasikan Figma dalam mendesain antarmuka pengguna UI,
+              pengembangan web menggunakan HTML, CSS dan JavaScript, dan
+              manajemen basis data seperti MySQL.
+            </p>
+          </div>
+        </div>
+         <div
+          class="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-6xl transition-all duration-300"
+        >
+          <dl
+            class="grid grid-flow-row-dense grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-8 lg:max-w-none lg:gap-y-8 transition-all duration-300"
+            x-data="{ shown: false }"
+            x-intersect.enter="shown = true"
+          >
+            <div
+              class="bg-no-repeat bg-contain h-[24rem]"
+              style="background-image: url('AL 1.svg')"
+            ></div>
+
+            <div class="self-center col-span-2">
+              <div class="lg:max-w-lg">
+                <h2 class="text-lg font-medium leading-8 text-blue-500">
+                  About Me
+                </h2>
+                <p
+                  class="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl"
+                >
+                  A Fresh Graduate
+                </p>
+                <p class="mt-6 font-medium text-base leading-6 text-gray-400">
+                  Saya seorang yang memiliki pengalaman luas dalam memberikan
+                  dukungan teknis. Pengetahuan luas tentang sistem operasi,
+                  jaringan komputer, perangkat keras dan perangkat lunak.
+                  Terampil mengoperasikan Figma dalam mendesain antarmuka
+                  pengguna UI, pengembangan web menggunakan HTML, CSS dan
+                  JavaScript, dan manajemen basis data seperti MySQL.
+                </p>
+              </div>
+            </div>
+          </dl>
+        </div>
+        <div
+          class="mx-auto max-w-7xl px-6 lg:px-8 transition-all z-10 relative"
+        >
+          <div
+            class="grid grid-cols-1 gap-x-8 gap-y-16 sm:gap-y-20 lg:grid-cols-2 items-stretch"
+          >
+            
+          </div>
+        </div>
+      </div>
+    </section> -->
+    <section id="Contact"></section>
+
+    <footer class="relative bg-white dark:bg-gray-900">
+      <div
+        class="w-full px-6 lg:px-8 bg-gray-100 dark:bg-gray-700 transition-all"
+      >
+        <div class="mapx-4 py-6 md:flex md:items-center md:justify-between">
+          <span class="text-sm text-gray-500 dark:text-gray-300 sm:text-center"
+            >© 2023 <a href="https://flowbite.com/">Flowbite™</a>. All Rights
+            Reserved.
+          </span>
+          <div class="flex mt-4 space-x-5 sm:justify-center md:mt-0">
+            <a
+              href="#"
+              class="text-gray-400 hover:text-gray-900 dark:hover:text-white"
+            >
+              <svg
+                class="w-4 h-4"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor"
+                viewBox="0 0 8 19"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M6.135 3H8V0H6.135a4.147 4.147 0 0 0-4.142 4.142V6H0v3h2v9.938h3V9h2.021l.592-3H5V3.591A.6.6 0 0 1 5.592 3h.543Z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+              <span class="sr-only">Facebook page</span>
+            </a>
+            <a
+              href="#"
+              class="text-gray-400 hover:text-gray-900 dark:hover:text-white"
+            >
+              <svg
+                class="w-4 h-4"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor"
+                viewBox="0 0 21 16"
+              >
+                <path
+                  d="M16.942 1.556a16.3 16.3 0 0 0-4.126-1.3 12.04 12.04 0 0 0-.529 1.1 15.175 15.175 0 0 0-4.573 0 11.585 11.585 0 0 0-.535-1.1 16.274 16.274 0 0 0-4.129 1.3A17.392 17.392 0 0 0 .182 13.218a15.785 15.785 0 0 0 4.963 2.521c.41-.564.773-1.16 1.084-1.785a10.63 10.63 0 0 1-1.706-.83c.143-.106.283-.217.418-.33a11.664 11.664 0 0 0 10.118 0c.137.113.277.224.418.33-.544.328-1.116.606-1.71.832a12.52 12.52 0 0 0 1.084 1.785 16.46 16.46 0 0 0 5.064-2.595 17.286 17.286 0 0 0-2.973-11.59ZM6.678 10.813a1.941 1.941 0 0 1-1.8-2.045 1.93 1.93 0 0 1 1.8-2.047 1.919 1.919 0 0 1 1.8 2.047 1.93 1.93 0 0 1-1.8 2.045Zm6.644 0a1.94 1.94 0 0 1-1.8-2.045 1.93 1.93 0 0 1 1.8-2.047 1.918 1.918 0 0 1 1.8 2.047 1.93 1.93 0 0 1-1.8 2.045Z"
+                />
+              </svg>
+              <span class="sr-only">Discord community</span>
+            </a>
+            <a
+              href="#"
+              class="text-gray-400 hover:text-gray-900 dark:hover:text-white"
+            >
+              <svg
+                class="w-4 h-4"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor"
+                viewBox="0 0 20 17"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M20 1.892a8.178 8.178 0 0 1-2.355.635 4.074 4.074 0 0 0 1.8-2.235 8.344 8.344 0 0 1-2.605.98A4.13 4.13 0 0 0 13.85 0a4.068 4.068 0 0 0-4.1 4.038 4 4 0 0 0 .105.919A11.705 11.705 0 0 1 1.4.734a4.006 4.006 0 0 0 1.268 5.392 4.165 4.165 0 0 1-1.859-.5v.05A4.057 4.057 0 0 0 4.1 9.635a4.19 4.19 0 0 1-1.856.07 4.108 4.108 0 0 0 3.831 2.807A8.36 8.36 0 0 1 0 14.184 11.732 11.732 0 0 0 6.291 16 11.502 11.502 0 0 0 17.964 4.5c0-.177 0-.35-.012-.523A8.143 8.143 0 0 0 20 1.892Z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+              <span class="sr-only">Twitter page</span>
+            </a>
+            <a
+              href="#"
+              class="text-gray-400 hover:text-gray-900 dark:hover:text-white"
+            >
+              <svg
+                class="w-4 h-4"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M10 .333A9.911 9.911 0 0 0 6.866 19.65c.5.092.678-.215.678-.477 0-.237-.01-1.017-.014-1.845-2.757.6-3.338-1.169-3.338-1.169a2.627 2.627 0 0 0-1.1-1.451c-.9-.615.07-.6.07-.6a2.084 2.084 0 0 1 1.518 1.021 2.11 2.11 0 0 0 2.884.823c.044-.503.268-.973.63-1.325-2.2-.25-4.516-1.1-4.516-4.9A3.832 3.832 0 0 1 4.7 7.068a3.56 3.56 0 0 1 .095-2.623s.832-.266 2.726 1.016a9.409 9.409 0 0 1 4.962 0c1.89-1.282 2.717-1.016 2.717-1.016.366.83.402 1.768.1 2.623a3.827 3.827 0 0 1 1.02 2.659c0 3.807-2.319 4.644-4.525 4.889a2.366 2.366 0 0 1 .673 1.834c0 1.326-.012 2.394-.012 2.72 0 .263.18.572.681.475A9.911 9.911 0 0 0 10 .333Z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+              <span class="sr-only">GitHub account</span>
+            </a>
+            <a
+              href="#"
+              class="text-gray-400 hover:text-gray-900 dark:hover:text-white"
+            >
+              <svg
+                class="w-4 h-4"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M10 0a10 10 0 1 0 10 10A10.009 10.009 0 0 0 10 0Zm6.613 4.614a8.523 8.523 0 0 1 1.93 5.32 20.094 20.094 0 0 0-5.949-.274c-.059-.149-.122-.292-.184-.441a23.879 23.879 0 0 0-.566-1.239 11.41 11.41 0 0 0 4.769-3.366ZM8 1.707a8.821 8.821 0 0 1 2-.238 8.5 8.5 0 0 1 5.664 2.152 9.608 9.608 0 0 1-4.476 3.087A45.758 45.758 0 0 0 8 1.707ZM1.642 8.262a8.57 8.57 0 0 1 4.73-5.981A53.998 53.998 0 0 1 9.54 7.222a32.078 32.078 0 0 1-7.9 1.04h.002Zm2.01 7.46a8.51 8.51 0 0 1-2.2-5.707v-.262a31.64 31.64 0 0 0 8.777-1.219c.243.477.477.964.692 1.449-.114.032-.227.067-.336.1a13.569 13.569 0 0 0-6.942 5.636l.009.003ZM10 18.556a8.508 8.508 0 0 1-5.243-1.8 11.717 11.717 0 0 1 6.7-5.332.509.509 0 0 1 .055-.02 35.65 35.65 0 0 1 1.819 6.476 8.476 8.476 0 0 1-3.331.676Zm4.772-1.462A37.232 37.232 0 0 0 13.113 11a12.513 12.513 0 0 1 5.321.364 8.56 8.56 0 0 1-3.66 5.73h-.002Z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+              <span class="sr-only">Dribbble account</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </body>
+  <script
+    src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"
+    data-deferred="1"
+  ></script>
+  <script src="script.js"></script>
+  <script src="particles.js"></script>
+</html>

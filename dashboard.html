@@ -1,0 +1,50 @@
+<div class="isolate px-6 pt-14 lg:px-8">
+  <div
+    class="mx-auto max-w-2xl py-48 sm:py-38 lg:py-32 bg-transparent z-10 transition-all"
+    x-data="{ shown: false }"
+    x-intersect="shown = true"
+  >
+    <div class="text-center">
+      <h1
+        class="text-4xl font-bold tracking-tight text-gray-900 dark:text-slate-200 sm:text-6xl transition-all"
+        x-show="shown"
+        x-transition:enter="transition transform ease-out duration-500"
+        x-transition:enter-start="-translate-y-20 opacity-0"
+        x-transition:enter-end="translate-y-0 opacity-100"
+      >
+        <div class="hidden sm:mb-8 sm:flex sm:justify-center"></div>
+        Hi! I'Am
+        <span
+          class="text-xl inline-block items-center px-2.5 py-1.5 sm:px-5 sm:py-2.5 sm:text-3xl font-medium text-center text-white bg-sky-400 rounded-full sm:align-[12px] align-[8px]"
+          x-show="shown"
+          x-transition:enter="transition transform ease-out duration-500 delay-150"
+          x-transition:enter-start="-translate-x-20 opacity-0"
+          x-transition:enter-end="translate-x-0 opacity-100"
+          >IT Support</span
+        >
+        <p>Muhammad Nur Alim</p>
+      </h1>
+      <p
+        class="mt-6 font-medium text-base leading-6 text-slate-400"
+        x-show="shown"
+        x-transition:enter="transition transform ease-out duration-500"
+        x-transition:enter-start="-translate-y-32 opacity-0"
+        x-transition:enter-end="translate-y-0 opacity-100"
+      >
+        Menjadi IT support dengan keterampilan yang dikembangkan sejak lahir dan
+        didukung oleh pengalaman otodidak dan bimbingan dari Ayah saya.
+      </p>
+      <div class="mt-10 flex items-center justify-center gap-x-6">
+        <a
+          href="#About"
+          class="text-sm font-semibold leading-6 text-gray-600"
+          x-show="shown"
+          x-transition:enter="transition transform ease-out duration-500 delay-500"
+          x-transition:enter-start="-translate-x-10 opacity-0"
+          x-transition:enter-end="translate-x-0 opacity-100"
+          >Learn More <span aria-hidden="true">→</span></a
+        >
+      </div>
+    </div>
+  </div>
+</div>
